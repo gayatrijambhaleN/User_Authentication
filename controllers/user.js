@@ -83,7 +83,8 @@ exports.create = (req, res) => {
     }
 
     //  create token
-    const token = req.body.token;
+    const token = req.headers["x-access-token"];
+    // ||req.body.token;
     if (!token) {
       return res.status(403).send("A token is required for authentication");
     }
