@@ -4,8 +4,9 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const app = express();
-
 require("dotenv").config();
+// Import Routes
+const userRoutes = require("./routes/user");
 
 // DB Connection
 mongoose
@@ -26,9 +27,6 @@ mongoose
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(cors());
-
-// Import Routes
-const userRoutes = require("./routes/user");
 
 // Use Routes
 app.use("/api", userRoutes);

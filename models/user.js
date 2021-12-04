@@ -5,23 +5,13 @@ const { ObjectId } = mongoose.Schema;
 
 const userSchema = new mongoose.Schema(
   {
-    firstname: {
+    name: {
       type: String,
       required: true,
       maxlength: 32,
       trim: true,
     },
-    lastname: {
-      type: String,
-      required: true,
-      maxlength: 32,
-      trim: true,
-    },
-    // aboutme: {
-    //   type: String,
-    //   maxlength: 2000,
-    //   trim: true,
-    // },
+
     email: {
       type: String,
       required: true,
@@ -29,10 +19,7 @@ const userSchema = new mongoose.Schema(
       trim: true,
       unique: true,
     },
-    // verification_code: {
-    //   type: Number,
-    //   default: null,
-    // },
+
     encry_password: {
       type: String,
       required: true,

@@ -1,6 +1,7 @@
 const { validationResult } = require("express-validator");
 const user = require("../models/user");
 const User = require("../models/user");
+const Data = require("../models/tournament");
 var jwt = require("jsonwebtoken");
 var expressJwt = require("express-jwt");
 
@@ -47,10 +48,16 @@ exports.signin = (req, res) => {
     }
 
     //create token
-    const token = jwt.sign({ _id: user._id }, process.env.SECRET);
+    const token = jwt.sign(
+      { _id: user._id, name: user.name },
+      process.env.SECRET,
+      {
+        expiresIn: "2h",
+      }
+    );
 
-    // put token in cookie
-    res.cookie("token", token, { expire: new Date() + 1 });
+    // save user token
+    user.token = token;
 
     //send response
     const { _id, name, email } = user;
@@ -84,7 +91,7 @@ exports.create = (req, res) => {
 
     //  create token
     const token = req.headers["x-access-token"];
-    // ||req.body.token;
+
     if (!token) {
       return res.status(403).send("A token is required for authentication");
     }
@@ -96,15 +103,40 @@ exports.create = (req, res) => {
     }
 
     //send response
-    const { _id, firstname, email } = user;
+    const { _id, name, email } = user;
     return res.json({
-      message: "created By",
-      // token,
+      message: "Logged in Successfully",
       user: {
         _id,
-        firstname,
+        name,
         email,
       },
     });
+  });
+};
+
+exports.tournament = (req, res) => {
+  const { tournament, startdate, enddate } = req.body;
+
+  //  create token
+  const token = req.headers["x-access-token"];
+
+  if (!token) {
+    return res.status(403).send("A token is required for authentication");
+  }
+  try {
+    const decoded = jwt.verify(token, process.env.SECRET);
+    req.user = decoded;
+    console.log("I am here", decoded);
+  } catch (err) {
+    return res.status(401).send("Invalid Token");
+  }
+
+  //send response
+  return res.json({
+    message: "Tournament created Successfully",
+    tournament,
+    startdate,
+    enddate,
   });
 };
